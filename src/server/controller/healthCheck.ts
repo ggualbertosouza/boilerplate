@@ -1,11 +1,18 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { Controller } from '../../decorators/controller';
 import { Request, Response } from 'express';
 import { Route } from '../../decorators/route';
+import HealthCheckService from '../../infra/service/health';
+import HttpError from '../../infra/errors';
 
-@injectable()
 @Controller('/health')
 class HealthCheckController {
+    private healthCheckService: HealthCheckService;
+
+    constructor(@inject(HealthCheckService) healthCheckService: HealthCheckService) {
+        this.healthCheckService = healthCheckService;
+    }
+
     /*
         Check if application is on 
     */
@@ -25,9 +32,16 @@ class HealthCheckController {
    /*
     Check CPU, memory and disk
     */
-   @Route('post', '/resource')
+   @Route('get', '/resources')
    checkResources(req: Request, res: Response) {
-    return res.status(200).json({ status: 'ok', message: 'resources' })
+
+    const memory = this.healthCheckService.memoryCheck();
+
+    const result = {
+        memory
+    }
+
+    return res.status(200).json({ status: 'ok', result }) 
    }
 }
 
