@@ -1,7 +1,7 @@
-import { DB_CONNECT, NODE_ENV, SERVER } from './config/index'
+import AppContainer from "./config/container";
+import Server from "./server";
 
-console.log({
-    DB_CONNECT,
-    NODE_ENV,
-    SERVER
-})
+const container = await new AppContainer().getInstance();
+const server = container.get(Server);
+await server.start();
+server.listen();
