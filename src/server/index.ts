@@ -5,7 +5,9 @@ import {  injectable } from 'inversify'
 import express, { Express } from 'express';
 import { loadModules } from '../utils/loadModules';
 import { registerControllers } from '../utils/registerControllers';
-import { errorHandler } from './middleware/errorHandler';
+import { errorHandler } from './middlewares/errorHandler';
+import AppContainer from '../config/container';
+import HealthCheckService from '../infra/service/health';
 
 @injectable()
 class Server {
@@ -18,9 +20,11 @@ class Server {
 
     public async start(): Promise<void> {
         this.app.use(express.json());
-            
-        const controllers = await loadModules('src/server/controller');
-        registerControllers(controllers, this.app);
+        
+        const container = await AppContainer.getInstance();
+
+        const controllers = await loadModules('src/server/controllers');
+        registerControllers(controllers, this.app, container);
 
         this.app.use(errorHandler);
         this.server = http.createServer(this.app);

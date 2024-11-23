@@ -1,26 +1,28 @@
 import { Container } from 'inversify';
 import Server from '../server';
 import HealthCheckService from '../infra/service/health';
+import HealthCheckController from '../server/controllers/healthCheck';
 import 'reflect-metadata';
 
 class AppContainer {
-    private container: Container;
+    private static instance: Container;
 
-    constructor() {
-        this.container = new Container();
-        this.setup();
+    public static async getInstance(): Promise<Container> {
+        if (!AppContainer.instance) {
+            const container = new Container();
+
+            AppContainer.setup(container);
+
+            AppContainer.instance = container;
+        };
+        return AppContainer.instance;
     }
 
-    public async getInstance(): Promise<Container> {
-        if (!this.container) return new Container;
-
-        return this.container;
-    }
-
-    private setup() {
-        this.container.bind(Server).to(Server).inSingletonScope();
-
-        this.container.bind(HealthCheckService).to(HealthCheckService).inSingletonScope();
+    private static setup(container: Container): void {
+        container.bind<Server>(Server).to(Server).inSingletonScope();
+    
+        container.bind<HealthCheckController>(HealthCheckController).to(HealthCheckController).inSingletonScope();
+        container.bind<HealthCheckService>(HealthCheckService).to(HealthCheckService).inSingletonScope();
     }
 }
 

@@ -1,5 +1,5 @@
-export function Controller(prefixRouterr: string = '') {
+export function Controller(prefixRouter: string = '') {
     return (target: any) => {
-        Reflect.defineMetadata('prefixRouter', prefixRouterr, target)
+        Reflect.defineMetadata('prefixRouter', prefixRouter, target)
     }
 }

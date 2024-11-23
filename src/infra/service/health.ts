@@ -3,8 +3,6 @@ import { injectable } from 'inversify';
 
 @injectable()
 class HealthCheckService {
-    constructor() {}
-
     public memoryCheck() {
         // const totalMemory = os.totalmem();
         // const freeMemory = os.freemem();

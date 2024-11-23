@@ -1,9 +1,11 @@
 import { Express } from 'express';
 import { RouteHandler } from '../@types/route';
+import { Container } from 'inversify';
 
-export function registerControllers(controllers: any[], app: Express) {
+export function registerControllers(controllers: any[], app: Express, container: Container) {
     controllers.forEach((ControllerClass) => {
-        const controller = new ControllerClass();
+        const controller = container.get(ControllerClass) as any;
+    
         const prefixRouter = Reflect.getMetadata('prefixRouter', ControllerClass) as string || '';
         const routerHandlers = Reflect.getMetadata('routerHandlers', controller) as RouteHandler;
 
