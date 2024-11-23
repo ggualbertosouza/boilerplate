@@ -8,8 +8,6 @@ import AppContainer from '../../config/container';
 @injectable()
 @Controller('/health')
 class HealthCheckController {
-    constructor() {}
-
     @Route('get')
     checkApp(req: Request, res: Response) {
         return res.status(200).json({ status: 'ok', message: 'Application is working!' })
