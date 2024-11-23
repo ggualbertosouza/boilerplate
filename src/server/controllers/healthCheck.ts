@@ -8,15 +8,11 @@ import AppContainer from '../../config/container';
 @injectable()
 @Controller('/health')
 class HealthCheckController {
-    private healthCheckService: HealthCheckService;
-
-    constructor(@inject(HealthCheckService) healthCheckService: HealthCheckService) {
-        this.healthCheckService = healthCheckService;
-    }
+    constructor() {}
 
     @Route('get')
     checkApp(req: Request, res: Response) {
-        return res.status(200).json({ status: 'ok', message: 'Don´t be worried, the application is working!' })
+        return res.status(200).json({ status: 'ok', message: 'Application is working!' })
     }
 
     @Route('get', '/db')
@@ -25,13 +21,14 @@ class HealthCheckController {
     }
 
     @Route('get', '/resources')
-    checkResources(req: Request, res: Response) {
-        const memory = this.healthCheckService.memoryCheck();
+    async checkResources(req: Request, res: Response) {
+        const healthCheckService = (await AppContainer.getInstance()).get(HealthCheckService);
         const result = {
-            memory
+            memory: healthCheckService.memoryCheck(),
+            cpu: healthCheckService.cpuCheck()
         }
 
-        return res.status(200).json({ status: 'ok', result }) 
+        return res.status(200).json(result) 
    }
 }
 
