@@ -1,6 +1,6 @@
-import AppContainer from "./config/container";
-import Server from "./server";
-import logger from "./utils/logger";
+import AppContainer from './config/container';
+import Server from './server';
+import logger from './utils/logger';
 
 console.log = logger.log.bind(logger);
 console.info = logger.info.bind(logger);
