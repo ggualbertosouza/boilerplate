@@ -7,7 +7,7 @@ import { loadModules } from '../utils/loadModules';
 import { RouteHandler } from '../@types/route';
 import { errorHandler } from './middlewares/errorHandler';
 import AppContainer from '../config/container';
-import { Container } from 'inversify';
+import { METADA_KEY } from '../domain/constants/appConstants';
 
 @injectable()
 class Server {
@@ -45,8 +45,8 @@ class Server {
         controllers.forEach((ControllerClass) => {
             const controller = container.get(ControllerClass) as any;
         
-            const prefixRouter = Reflect.getMetadata('prefixRouter', ControllerClass) as string || '';
-            const routerHandlers = Reflect.getMetadata('routerHandlers', controller) as RouteHandler;
+            const prefixRouter = Reflect.getMetadata(METADA_KEY.router, ControllerClass) as string || '';
+            const routerHandlers = Reflect.getMetadata(METADA_KEY.controller, controller) as RouteHandler;
 
             if (!routerHandlers) return;
 

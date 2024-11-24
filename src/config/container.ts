@@ -21,7 +21,7 @@ class AppContainer {
     private static setup(container: Container): void {
         container.bind<Server>(Server).to(Server).inSingletonScope();
     
-        container.bind<HealthCheckController>(HealthCheckController).to(HealthCheckController).inSingletonScope();
+        container.bind<HealthCheckController>(HealthCheckController).to(HealthCheckController).inRequestScope();
         container.bind<HealthCheckService>(HealthCheckService).to(HealthCheckService).inSingletonScope();
     }
 }
