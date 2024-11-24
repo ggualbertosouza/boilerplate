@@ -8,4 +8,3 @@ Libs utilizadas como inspiração: - inversify-express-utils
 
 ### TODO
 
-- [] Fazer o prettier funcionar
