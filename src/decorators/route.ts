@@ -1,5 +1,5 @@
 import { Express, RequestHandler } from 'express';
-import { RouteHandler } from '../@types/route';
+import { RouteHandler } from '../library/route';
 import { METADA_KEY } from '../domain/constants/appConstants';
 
 export function httpGet(path: string = '', ...middleware: RequestHandler[]) {
