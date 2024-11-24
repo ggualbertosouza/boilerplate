@@ -2,7 +2,11 @@
 
 Template base para REST API.
 
+Estou utilizando ideias de algumas libs, tendo como intenção recriar essas funcionalidades para adquirir conhecimentos.
+
+Libs utilizadas como inspiração: 
+    - inversify-express-utils
+
 ### TODO
 
-- [] Implementar Service HealthCheck -> erro na injeção de dependência
 - [] Fazer o prettier funcionar
