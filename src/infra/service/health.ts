@@ -3,32 +3,32 @@ import { injectable } from 'inversify';
 
 @injectable()
 class HealthCheckService {
-    public memoryCheck() {
-        const totalMemory = os.totalmem();
-        const freeMemory = os.freemem();
+  public memoryCheck() {
+    const totalMemory = os.totalmem();
+    const freeMemory = os.freemem();
 
-        return {
-            total: totalMemory,
-            free: freeMemory,
-            usage: totalMemory - freeMemory
-        };
-    }
+    return {
+      total: totalMemory,
+      free: freeMemory,
+      usage: totalMemory - freeMemory,
+    };
+  }
 
-    public cpuCheck() {
-        const cpus = os.cpus();
+  public cpuCheck() {
+    const cpus = os.cpus();
 
-        const cpuUsage = cpus.map(cpu => {
-            const times = cpu.times;
-            const total = Object.values(times).reduce((acc, val) => acc + val, 0);
-            const usage = ((total - times.idle) / total) * 100;
-            return {
-                model: cpu.model,
-                usage: usage.toFixed(2)
-            };
-        });
+    const cpuUsage = cpus.map((cpu) => {
+      const times = cpu.times;
+      const total = Object.values(times).reduce((acc, val) => acc + val, 0);
+      const usage = ((total - times.idle) / total) * 100;
+      return {
+        model: cpu.model,
+        usage: usage.toFixed(2),
+      };
+    });
 
-        return cpuUsage;
-    }
+    return cpuUsage;
+  }
 }
 
 export default HealthCheckService;

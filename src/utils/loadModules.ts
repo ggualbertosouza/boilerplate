@@ -3,20 +3,20 @@ import path from 'node:path';
 import { NODE_ENV } from '../config';
 
 export async function loadModules(folderPath: string) {
-    const files = await fs.readdirSync(path.resolve(folderPath));
-    
-    const modules: any[] = [];
+  const files = await fs.readdirSync(path.resolve(folderPath));
 
-    for (const file of files) {
-        const fileExtension = NODE_ENV === 'development' ? '.ts' : '.js';
+  const modules: any[] = [];
 
-        if (!file.endsWith(fileExtension)) continue;
+  for (const file of files) {
+    const fileExtension = NODE_ENV === 'development' ? '.ts' : '.js';
 
-        const fullPath = path.resolve(path.join(folderPath, file));
+    if (!file.endsWith(fileExtension)) continue;
 
-        const module = await import(fullPath);
-        modules.push(module.default || module);
-    }
+    const fullPath = path.resolve(path.join(folderPath, file));
 
-    return modules;
+    const module = await import(fullPath);
+    modules.push(module.default || module);
+  }
+
+  return modules;
 }
