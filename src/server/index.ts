@@ -1,14 +1,15 @@
 import 'reflect-metadata';
 import http from 'node:http';
-import { SERVER } from '../config';
+import { NODE_ENV, SERVER } from '../config';
 import { inject, injectable } from 'inversify';
-import express, { Express } from 'express';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import { loadModules } from '../utils/loadModules';
 import { RouteHandler } from '../@types/route';
 import { errorHandler } from './middlewares/errorHandler';
 import AppContainer from '../config/container';
 import { METADA_KEY } from '../domain/constants/appConstants';
 import DatabaseConnection from '../config/db';
+import cors from 'cors';
 
 @injectable()
 class Server {
@@ -25,6 +26,8 @@ class Server {
 
   public async start(): Promise<void> {
     this.app.use(express.json());
+    this.setupCors();
+
     this.databaseConnection.connect();
 
     this.registerControllers(await loadModules('src/server/controllers'));
@@ -68,6 +71,59 @@ class Server {
           }
         });
       });
+    });
+  }
+
+  private setupCors() {
+    // Domínios permitidos - Prod
+    const allowedProdOrigins = [''];
+
+    // Domínios permitidos - Dev
+    const allowedDevOrigins = [
+      `http://${SERVER.HOSTNAME}:${SERVER.PORT}`,
+      `http://127.0.0.1:${SERVER.PORT}`,
+    ];
+
+    this.app.use(
+      cors({
+        origin: (origin: string | undefined, callback: Function) => {
+          if (
+            NODE_ENV === 'development' &&
+            (!origin || allowedDevOrigins.includes(origin))
+          ) {
+            return callback(null, true);
+          }
+
+          if (
+            NODE_ENV === 'production' &&
+            origin &&
+            allowedProdOrigins.includes(origin)
+          ) {
+            return callback(null, true);
+          }
+
+          callback(new Error('Not allowed by CORS'));
+        },
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        allowedHeaders: [
+          'Origin',
+          'X-Requested-With',
+          'Content-Type',
+          'Accept',
+          'Authorization',
+        ],
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
+      }),
+    );
+
+    this.app.options('*', (req: Request, res: Response, next: NextFunction) => {
+      res.header(
+        'Access-Control-Allow-Methods',
+        'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      );
+      res.status(204).send('');
     });
   }
 }
